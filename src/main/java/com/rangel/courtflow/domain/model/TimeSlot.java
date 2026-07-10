@@ -12,10 +12,10 @@ public class TimeSlot {
     LocalDateTime end;
 
     public TimeSlot(LocalDateTime start, LocalDateTime end) {
-        if (start == null || end == null) {
+        if(start == null || end == null) {
             throw new IllegalArgumentException("Start and end times cannot be null");
         }
-        if (!start.isBefore(end)) {
+        if(!start.isBefore(end)) {
             throw new IllegalArgumentException("Start time must be before end time");
         }
         this.start = start;
@@ -23,7 +23,7 @@ public class TimeSlot {
     }
 
     public boolean conflictsWith(TimeSlot other) {
-        if (other == null) {
+        if(other == null) {
             return false;
         }
         return this.start.isBefore(other.end) && this.end.isAfter(other.start);

@@ -3,7 +3,6 @@ package com.rangel.courtflow.domain.model;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -14,19 +13,19 @@ public class Court {
     private final UUID id;
     private final String name;
     private final Set<Sport> sports;
-    private Status status;
+    private CourtStatus status;
 
-    public Court(UUID id, String name, Set<Sport> sports, Status status) {
-        if (id == null) {
+    public Court(UUID id, String name, Set<Sport> sports, CourtStatus status) {
+        if(id == null) {
             throw new IllegalArgumentException("The court ID cannot be null");
         }
-        if (name == null || name.strip().isEmpty()) {
+        if(name == null || name.strip().isEmpty()) {
             throw new IllegalArgumentException("The court name cannot be null or empty");
         }
-        if (sports == null || sports.isEmpty()) {
+        if(sports == null || sports.isEmpty()) {
             throw new IllegalArgumentException("The court must accommodate at least one sport");
         }
-        if (status == null) {
+        if(status == null) {
             throw new IllegalArgumentException("The initial status of the court cannot be null");
         }
 
@@ -37,9 +36,9 @@ public class Court {
     }
 
     public void deactivate() {
-        if (this.status == Status.INACTIVE) {
+        if(this.status == CourtStatus.INACTIVE) {
             throw new IllegalStateException("The court is already inactive");
         }
-        this.status = Status.INACTIVE;
+        this.status = CourtStatus.INACTIVE;
     }
 }

@@ -1,6 +1,6 @@
 package com.rangel.courtflow.domain.model;
 
-public enum Status {
+public enum CourtStatus {
     ACTIVE,
     INACTIVE
 }
