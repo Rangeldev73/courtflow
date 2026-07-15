@@ -1,4 +1,4 @@
-package com.rangel.courtflow.application;
+package com.rangel.courtflow.application.court;
 
 import com.rangel.courtflow.domain.model.Court;
 import com.rangel.courtflow.domain.model.CourtStatus;
