@@ -1,5 +1,6 @@
 package com.rangel.courtflow.infrastructure.web;
 
+import com.rangel.courtflow.application.court.ActivateCourtUseCase;
 import com.rangel.courtflow.application.court.CreateCourtUseCase;
 import com.rangel.courtflow.application.court.DeactivateCourtUseCase;
 import com.rangel.courtflow.application.court.FindCourtByIdUseCase;
@@ -27,11 +28,18 @@ public class CourtController {
     private final ListCourtsUseCase listCourtsUseCase;
     private final FindCourtByIdUseCase findCourtByIdUseCase;
     private final DeactivateCourtUseCase deactivateCourtUseCase;
-    public CourtController(CreateCourtUseCase createCourtUseCase, ListCourtsUseCase listCourtsUseCase, FindCourtByIdUseCase findCourtByIdUseCase, DeactivateCourtUseCase deactivateCourtUseCase) {
+    private final ActivateCourtUseCase activateCourtUseCase;
+
+    public CourtController(CreateCourtUseCase createCourtUseCase,
+                           ListCourtsUseCase listCourtsUseCase,
+                           FindCourtByIdUseCase findCourtByIdUseCase,
+                           DeactivateCourtUseCase deactivateCourtUseCase,
+                           ActivateCourtUseCase activateCourtUseCase) {
         this.createCourtUseCase = createCourtUseCase;
         this.listCourtsUseCase = listCourtsUseCase;
         this.findCourtByIdUseCase = findCourtByIdUseCase;
         this.deactivateCourtUseCase = deactivateCourtUseCase;
+        this.activateCourtUseCase = activateCourtUseCase;
     }
 
     @PostMapping
@@ -55,6 +63,12 @@ public class CourtController {
     @PatchMapping("/{id}/deactivate")
     public ResponseEntity<CourtResponseDTO> deactivate(@PathVariable UUID id) {
         CourtResponseDTO courtResponseDTO = deactivateCourtUseCase.execute(id);
+        return ResponseEntity.status(HttpStatus.OK).body(courtResponseDTO);
+    }
+
+    @PatchMapping("/{id}/activate")
+    public ResponseEntity<CourtResponseDTO> activate(@PathVariable UUID id) {
+        CourtResponseDTO courtResponseDTO = activateCourtUseCase.execute(id);
         return ResponseEntity.status(HttpStatus.OK).body(courtResponseDTO);
     }
 }
