@@ -1,6 +1,7 @@
 package com.rangel.courtflow.infrastructure.web;
 
 import com.rangel.courtflow.application.court.CreateCourtUseCase;
+import com.rangel.courtflow.application.court.DeactivateCourtUseCase;
 import com.rangel.courtflow.application.court.FindCourtByIdUseCase;
 import com.rangel.courtflow.application.court.ListCourtsUseCase;
 import com.rangel.courtflow.infrastructure.web.dto.CourtRequestDTO;
@@ -9,6 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,11 +26,12 @@ public class CourtController {
     private final CreateCourtUseCase createCourtUseCase;
     private final ListCourtsUseCase listCourtsUseCase;
     private final FindCourtByIdUseCase findCourtByIdUseCase;
-
-    public CourtController(CreateCourtUseCase createCourtUseCase, ListCourtsUseCase listCourtsUseCase, FindCourtByIdUseCase findCourtByIdUseCase) {
+    private final DeactivateCourtUseCase deactivateCourtUseCase;
+    public CourtController(CreateCourtUseCase createCourtUseCase, ListCourtsUseCase listCourtsUseCase, FindCourtByIdUseCase findCourtByIdUseCase, DeactivateCourtUseCase deactivateCourtUseCase) {
         this.createCourtUseCase = createCourtUseCase;
         this.listCourtsUseCase = listCourtsUseCase;
         this.findCourtByIdUseCase = findCourtByIdUseCase;
+        this.deactivateCourtUseCase = deactivateCourtUseCase;
     }
 
     @PostMapping
@@ -46,6 +49,12 @@ public class CourtController {
     @GetMapping("/{id}")
     public ResponseEntity<CourtResponseDTO> findById(@PathVariable UUID id) {
         CourtResponseDTO courtResponseDTO = findCourtByIdUseCase.execute(id);
+        return ResponseEntity.status(HttpStatus.OK).body(courtResponseDTO);
+    }
+
+    @PatchMapping("/{id}/deactivate")
+    public ResponseEntity<CourtResponseDTO> deactivate(@PathVariable UUID id) {
+        CourtResponseDTO courtResponseDTO = deactivateCourtUseCase.execute(id);
         return ResponseEntity.status(HttpStatus.OK).body(courtResponseDTO);
     }
 }

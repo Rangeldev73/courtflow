@@ -41,4 +41,11 @@ public class Court {
         }
         this.status = CourtStatus.INACTIVE;
     }
+
+    public void activate() {
+        if (this.status == CourtStatus.ACTIVE) {
+            throw new IllegalStateException("The court is already active");
+        }
+        this.status = CourtStatus.ACTIVE;
+    }
 }
