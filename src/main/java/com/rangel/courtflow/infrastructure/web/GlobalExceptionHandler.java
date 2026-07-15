@@ -1,5 +1,6 @@
 package com.rangel.courtflow.infrastructure.web;
 
+import com.rangel.courtflow.domain.exception.CourtNotFoundException;
 import com.rangel.courtflow.infrastructure.web.dto.ApiErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,5 +28,17 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(CourtNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleCourtNotFound(CourtNotFoundException ex) {
+        ApiErrorResponse errorResponse = new ApiErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                ex.getMessage(),
+                Instant.now(),
+                List.of()
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 }

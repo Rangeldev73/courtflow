@@ -1,6 +1,7 @@
 package com.rangel.courtflow.infrastructure.web;
 
 import com.rangel.courtflow.application.court.CreateCourtUseCase;
+import com.rangel.courtflow.application.court.FindCourtByIdUseCase;
 import com.rangel.courtflow.application.court.ListCourtsUseCase;
 import com.rangel.courtflow.infrastructure.web.dto.CourtRequestDTO;
 import com.rangel.courtflow.infrastructure.web.dto.CourtResponseDTO;
@@ -8,11 +9,13 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/courts")
@@ -20,10 +23,12 @@ public class CourtController {
 
     private final CreateCourtUseCase createCourtUseCase;
     private final ListCourtsUseCase listCourtsUseCase;
+    private final FindCourtByIdUseCase findCourtByIdUseCase;
 
-    public CourtController(CreateCourtUseCase createCourtUseCase, ListCourtsUseCase listCourtsUseCase) {
+    public CourtController(CreateCourtUseCase createCourtUseCase, ListCourtsUseCase listCourtsUseCase, FindCourtByIdUseCase findCourtByIdUseCase) {
         this.createCourtUseCase = createCourtUseCase;
         this.listCourtsUseCase = listCourtsUseCase;
+        this.findCourtByIdUseCase = findCourtByIdUseCase;
     }
 
     @PostMapping
@@ -36,5 +41,11 @@ public class CourtController {
     public ResponseEntity<List<CourtResponseDTO>> list() {
         List<CourtResponseDTO> courts = listCourtsUseCase.execute();
         return ResponseEntity.status(HttpStatus.OK).body(courts);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CourtResponseDTO> findById(@PathVariable UUID id) {
+        CourtResponseDTO courtResponseDTO = findCourtByIdUseCase.execute(id);
+        return ResponseEntity.status(HttpStatus.OK).body(courtResponseDTO);
     }
 }
