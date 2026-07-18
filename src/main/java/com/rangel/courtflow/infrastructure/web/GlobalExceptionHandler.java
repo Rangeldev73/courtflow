@@ -7,6 +7,7 @@ import com.rangel.courtflow.infrastructure.web.dto.ApiErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.time.Instant;
@@ -22,14 +23,7 @@ public class GlobalExceptionHandler {
                 .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
                 .collect(Collectors.toList());
 
-        ApiErrorResponse errorResponse = new ApiErrorResponse(
-                HttpStatus.BAD_REQUEST.value(),
-                "Validation failed",
-                Instant.now(),
-                errors
-        );
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        return buildBadRequestResponse("Validation failed", errors);
     }
 
     @ExceptionHandler(CourtNotFoundException.class)
@@ -72,5 +66,24 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ApiErrorResponse> handleMissingParameter(MissingServletRequestParameterException ex) {
+        String detail = ex.getParameterName() + ": is required";
+        return buildBadRequestResponse("Missing required parameter", List.of(detail));
+    }
+
+
+
+    private ResponseEntity<ApiErrorResponse> buildBadRequestResponse(String message, List<String> errors) {
+        ApiErrorResponse errorResponse = new ApiErrorResponse(
+                HttpStatus.BAD_REQUEST.value(),
+                message,
+                Instant.now(),
+                errors
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 }
