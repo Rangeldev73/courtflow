@@ -7,15 +7,14 @@ import com.rangel.courtflow.infrastructure.persistence.BookingJpaRepository;
 import com.rangel.courtflow.infrastructure.web.dto.BookingResponseDTO;
 import com.rangel.courtflow.infrastructure.web.mapper.BookingMapper;
 import org.springframework.stereotype.Service;
-
 import java.util.UUID;
 
 @Service
-public class ConfirmBookingUseCase {
+public class CancelBookingUseCase {
 
     private final BookingJpaRepository bookingJpaRepository;
 
-    public ConfirmBookingUseCase(BookingJpaRepository bookingJpaRepository) {
+    public CancelBookingUseCase(BookingJpaRepository bookingJpaRepository) {
         this.bookingJpaRepository = bookingJpaRepository;
     }
 
@@ -24,7 +23,7 @@ public class ConfirmBookingUseCase {
                 .orElseThrow(() -> new BookingNotFoundException("Booking not found with id: " + id));
 
         Booking booking = BookingMapper.toDomain(entity);
-        booking.confirm();
+        booking.cancel();
 
         BookingJpaEntity entityToSave = BookingMapper.toJpaEntity(booking);
         bookingJpaRepository.save(entityToSave);
