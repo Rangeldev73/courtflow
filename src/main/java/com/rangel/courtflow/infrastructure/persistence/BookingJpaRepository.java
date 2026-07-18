@@ -7,4 +7,6 @@ import java.util.UUID;
 
 public interface BookingJpaRepository extends JpaRepository<BookingJpaEntity, UUID> {
     List<BookingJpaEntity> findByCourtIdAndStatusNotIn(UUID courtId, List<BookingStatus> excludedStatuses);
+
+    List<BookingJpaEntity> findByCourtId(UUID courtId);
 }
