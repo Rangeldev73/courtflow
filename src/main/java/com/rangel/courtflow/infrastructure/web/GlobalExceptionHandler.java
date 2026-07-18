@@ -1,6 +1,7 @@
 package com.rangel.courtflow.infrastructure.web;
 
 import com.rangel.courtflow.domain.exception.BookingConflictException;
+import com.rangel.courtflow.domain.exception.BookingNotFoundException;
 import com.rangel.courtflow.domain.exception.CourtNotFoundException;
 import com.rangel.courtflow.infrastructure.web.dto.ApiErrorResponse;
 import org.springframework.http.HttpStatus;
@@ -33,9 +34,18 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CourtNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleCourtNotFound(CourtNotFoundException ex) {
+        return buildNotFoundResponse(ex.getMessage());
+    }
+
+    @ExceptionHandler(BookingNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleBookingNotFound(BookingNotFoundException ex) {
+        return buildNotFoundResponse(ex.getMessage());
+    }
+
+    private ResponseEntity<ApiErrorResponse> buildNotFoundResponse(String message) {
         ApiErrorResponse errorResponse = new ApiErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
-                ex.getMessage(),
+                message,
                 Instant.now(),
                 List.of()
         );
