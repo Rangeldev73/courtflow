@@ -25,8 +25,8 @@ public class CancelBookingUseCase {
         Booking booking = BookingMapper.toDomain(entity);
         booking.cancel();
 
-        BookingJpaEntity entityToSave = BookingMapper.toJpaEntity(booking);
-        bookingJpaRepository.save(entityToSave);
+        entity.setStatus(booking.getStatus());
+        bookingJpaRepository.save(entity);
 
         return BookingMapper.toResponseDTO(booking);
     }

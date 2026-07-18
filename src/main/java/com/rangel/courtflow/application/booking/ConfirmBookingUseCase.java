@@ -26,8 +26,8 @@ public class ConfirmBookingUseCase {
         Booking booking = BookingMapper.toDomain(entity);
         booking.confirm();
 
-        BookingJpaEntity entityToSave = BookingMapper.toJpaEntity(booking);
-        bookingJpaRepository.save(entityToSave);
+        entity.setStatus(booking.getStatus());
+        bookingJpaRepository.save(entity);
 
         return BookingMapper.toResponseDTO(booking);
     }
