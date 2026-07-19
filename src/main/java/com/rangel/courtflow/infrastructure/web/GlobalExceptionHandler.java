@@ -3,6 +3,7 @@ package com.rangel.courtflow.infrastructure.web;
 import com.rangel.courtflow.domain.exception.BookingConflictException;
 import com.rangel.courtflow.domain.exception.BookingNotFoundException;
 import com.rangel.courtflow.domain.exception.CourtNotFoundException;
+import com.rangel.courtflow.domain.exception.EmailAlreadyInUseException;
 import com.rangel.courtflow.infrastructure.web.dto.ApiErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -74,7 +75,10 @@ public class GlobalExceptionHandler {
         return buildBadRequestResponse("Missing required parameter", List.of(detail));
     }
 
-
+    @ExceptionHandler(EmailAlreadyInUseException.class)
+    public ResponseEntity<ApiErrorResponse> handleEmailAlreadyInUse(EmailAlreadyInUseException ex) {
+        return buildConflictResponse(ex.getMessage());
+    }
 
     private ResponseEntity<ApiErrorResponse> buildBadRequestResponse(String message, List<String> errors) {
         ApiErrorResponse errorResponse = new ApiErrorResponse(
