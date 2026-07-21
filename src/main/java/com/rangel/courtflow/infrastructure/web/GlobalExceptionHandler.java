@@ -4,6 +4,7 @@ import com.rangel.courtflow.domain.exception.BookingConflictException;
 import com.rangel.courtflow.domain.exception.BookingNotFoundException;
 import com.rangel.courtflow.domain.exception.CourtNotFoundException;
 import com.rangel.courtflow.domain.exception.EmailAlreadyInUseException;
+import com.rangel.courtflow.domain.exception.InvalidCredentialsException;
 import com.rangel.courtflow.infrastructure.web.dto.ApiErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -89,5 +90,21 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ApiErrorResponse> handleInvalidCredentials(InvalidCredentialsException ex) {
+        return buildUnauthorizedResponse(ex.getMessage());
+    }
+
+    private ResponseEntity<ApiErrorResponse> buildUnauthorizedResponse(String message) {
+        ApiErrorResponse errorResponse = new ApiErrorResponse(
+                HttpStatus.UNAUTHORIZED.value(),
+                message,
+                Instant.now(),
+                List.of()
+        );
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
     }
 }
