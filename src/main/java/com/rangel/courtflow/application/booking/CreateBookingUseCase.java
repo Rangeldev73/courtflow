@@ -1,6 +1,5 @@
 package com.rangel.courtflow.application.booking;
 
-
 import com.rangel.courtflow.domain.exception.BookingConflictException;
 import com.rangel.courtflow.domain.exception.CourtNotFoundException;
 import com.rangel.courtflow.domain.model.Booking;
@@ -8,6 +7,7 @@ import com.rangel.courtflow.domain.model.BookingStatus;
 import com.rangel.courtflow.domain.model.Court;
 import com.rangel.courtflow.domain.model.CourtStatus;
 import com.rangel.courtflow.domain.model.TimeSlot;
+import com.rangel.courtflow.infrastructure.config.RabbitMQConfig;
 import com.rangel.courtflow.infrastructure.persistence.BookingJpaEntity;
 import com.rangel.courtflow.infrastructure.persistence.BookingJpaRepository;
 import com.rangel.courtflow.infrastructure.persistence.CourtJpaEntity;
@@ -16,6 +16,7 @@ import com.rangel.courtflow.infrastructure.web.dto.BookingRequestDTO;
 import com.rangel.courtflow.infrastructure.web.dto.BookingResponseDTO;
 import com.rangel.courtflow.infrastructure.web.mapper.BookingMapper;
 import com.rangel.courtflow.infrastructure.web.mapper.CourtMapper;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
@@ -24,10 +25,14 @@ public class CreateBookingUseCase {
 
     private final CourtJpaRepository courtJpaRepository;
     private final BookingJpaRepository bookingJpaRepository;
+    private final RabbitTemplate rabbitTemplate;
 
-    public CreateBookingUseCase(CourtJpaRepository courtJpaRepository, BookingJpaRepository bookingJpaRepository) {
+    public CreateBookingUseCase(CourtJpaRepository courtJpaRepository,
+                                BookingJpaRepository bookingJpaRepository,
+                                RabbitTemplate rabbitTemplate) {
         this.courtJpaRepository = courtJpaRepository;
         this.bookingJpaRepository = bookingJpaRepository;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     public BookingResponseDTO execute(BookingRequestDTO requestDTO) {
@@ -59,6 +64,8 @@ public class CreateBookingUseCase {
 
         BookingJpaEntity entityToSave = BookingMapper.toJpaEntity(booking);
         bookingJpaRepository.save(entityToSave);
+
+        rabbitTemplate.convertAndSend(RabbitMQConfig.PENDING_QUEUE, booking.getId());
 
         return BookingMapper.toResponseDTO(booking);
     }
