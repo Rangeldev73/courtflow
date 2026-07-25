@@ -1,6 +1,8 @@
 package com.rangel.courtflow.infrastructure.config;
 
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -37,5 +39,10 @@ public class RabbitMQConfig {
                 .bind(expiredQueue())
                 .to(expirationExchange())
                 .with(EXPIRED_ROUTING_KEY);
+    }
+
+    @Bean
+    public MessageConverter jsonMessageConverter() {
+        return new JacksonJsonMessageConverter();
     }
 }
