@@ -1,6 +1,6 @@
 # CourtFlow
 
-[🇧🇷 Português](README.pt-br.md)
+[🇧🇷 Português](README.PT-BR.md)
 
 A sports court booking system built to explore concurrency control, event-driven expiration, and Clean Architecture in a real, production-style backend — built as a portfolio project for Java backend internship/junior roles.
 
